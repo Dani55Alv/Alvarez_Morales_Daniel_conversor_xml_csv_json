@@ -1,0 +1,16 @@
+<usuarios>
+    <usuario>
+        <nombre>Juan</nombre>
+        <edad>25</edad>
+    </usuario>
+    <usuario>
+        <id>2</id>
+        <nombre>Ana</nombre>
+        <edad>30</edad>
+    </usuario>
+    <usuario>
+        <id>3</id>
+        <nombre>Luis</nombre>
+        <edad>22</edad>
+    </usuario>
+</usuarios>
