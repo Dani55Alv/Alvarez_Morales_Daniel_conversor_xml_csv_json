@@ -1,0 +1,15 @@
+{
+  "trenes": [
+    { "id": 1, 
+    "nombre": "Expreso Norte", 
+    "capacidad": 250 
+    },
+    { "id": 2, 
+    "nombre": "Tren Rápido Sur", 
+    "capacidad": 300 
+    },
+    { "id": 3, 
+    "nombre": "Viajero Este", 
+    "capacidad": 150 }
+  ]
+}

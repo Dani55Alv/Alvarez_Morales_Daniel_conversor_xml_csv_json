@@ -1,0 +1,20 @@
+<aviones>
+    <avion>
+        <id>101</id>
+        <modelo>Boeing 747</modelo>
+        <capacidad>416</capacidad>
+        <aerolinea>Iberia</aerolinea>
+    </avion>
+    <avion>
+        <id>102</id>
+        <modelo>Airbus A320</modelo>
+        <capacidad>180</capacidad>
+        <aerolinea>Vueling</aerolinea>
+    </avion>
+    <avion>
+        <id>103</id>
+        <modelo>Embraer E190</modelo>
+        <capacidad>100</capacidad>
+        <aerolinea>Air Europa</aerolinea>
+    </avion>
+</aviones>

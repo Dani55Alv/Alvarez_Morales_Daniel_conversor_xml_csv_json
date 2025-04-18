@@ -1,0 +1,35 @@
+<Elementos>
+<Elemento>
+<id>
+ 1
+</id>
+<nombre>
+Expreso Norte
+</nombre>
+<capacidad>
+ 250 
+</capacidad>
+</Elemento>
+<Elemento>
+<id>
+ 2
+</id>
+<nombre>
+Tren Rápido Sur
+</nombre>
+<capacidad>
+ 300 
+</capacidad>
+</Elemento>
+<Elemento>
+<id>
+ 3
+</id>
+<nombre>
+Viajero Este
+</nombre>
+<capacidad>
+150
+</capacidad>
+</Elemento>
+</Elementos>

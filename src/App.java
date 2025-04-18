@@ -1,65 +1,26 @@
+
+/**
+ * Es la clase principal donde se desarrolla el programa Gestion_conversor.
+ * 
+ * @author Daniel Alvarez Morales
+ * @version 1.0
+ * @since 2025
+ * 
+ */
+
 import java.io.File;
-import java.io.IO;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
 
     public static void main(String[] args) {
-/*
- * List<String> tester = new ArrayList<>();
- * List<String> testerAux = new ArrayList<>();
- * 
- * String a =
- * "C:\\Users\\daniy\\OneDrive\\Escritorio\\visualStudioClases\\gitHub\\Repositorio_Trabajo_Conversor_Ficheros\\Conversor_Ficheros\\Directorio_2\\archivo.xml";
- * Path ew = Paths.get(a);
- * try {
- * tester = Files.readAllLines(ew);
- * 
- * } catch (Exception e) {
- * System.out.println("Error");
- * e.printStackTrace();
- * }
- * for (String linea : tester) {
- * // Eliminamos las etiquetas y conservamos solo los valores
- * String[] partes = linea.split("(?=<)|(?<=>)");
- * 
- * for (String string : partes) {
- * if (string.startsWith("<") && string.endsWith(">")) {
- * // Ignoramos las etiquetas
- * continue;
- * }
- * 
- * // Imprimir solo los valores dentro de las etiquetas
- * String value = string.trim();
- * 
- * if (!value.isEmpty()) {
- * System.out.println(value); // Mostrar en consola
- * testerAux.add(value); // Guardar en lista auxiliar
- * }
- * }
- * 
- * }
- * System.out.println();
- * System.out.println("Mira");
- * 
- * for (String line : testerAux) {
- * System.out.println(line);
- * }
- * 
- * System.out.println();
- */
-        
- // TODO EL PROGRAMA
+
         Scanner sc = new Scanner(System.in);
+
         boolean salir = false;
-        String rutaDirectorio = "";
-        String archivo = "";
         File directorioSeleccionado = null;
 
         String archivoSeleccionado = null;
@@ -72,19 +33,44 @@ public class App {
             System.out.println("3-. Conversión a (csv, json, xml)");
             System.out.println("4-. Salir");
 
-            // a. Ruta dela carpeta seleccionada.
+            // Ruta dela carpeta seleccionada.
             boolean esNull;
 
             esNull = gestion.verRutaDirectorio(directorioSeleccionado);
-            // b. Contenido de la carpeta seleccionada.
-            gestion.verContenidoDirectorio(directorioSeleccionado);
-            // c. Fichero seleccionado.
+            // Contenido de la carpeta seleccionada.
+
+            try {
+                gestion.verContenidoDirectorio(directorioSeleccionado);
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+                System.out.println("Error en el listado de archivos");
+            }
+
+            // Fichero seleccionado.
             gestion.verFichero(archivoSeleccionado);
 
-            System.out.print("Seleccione una opción: ");
+            // Inicializamos el valor de opcion con cualquier valor (Es redundante pero se
+            // deber hacer para inicializarlo).
+            int opcion = 9;
 
-            int opcion = sc.nextInt();
-            sc.nextLine();
+            boolean volverIntroducir = false;
+            do {
+                try {
+                    System.out.print("Seleccione una opción: ");
+
+                    opcion = sc.nextInt();
+                    sc.nextLine();
+
+                    volverIntroducir = true;
+
+                } catch (InputMismatchException e) {
+                    System.out.println("Error, entrada incorrecta, asegurate de introducir un numero del menú.");
+                    sc.nextLine();
+                    e.printStackTrace();
+                }
+            } while (!volverIntroducir);
 
             switch (opcion) {
                 case 1:
@@ -97,6 +83,7 @@ public class App {
                     break;
 
                 case 2:
+
                     // Lectura de fichero
                     if (!esNull) {
 
@@ -104,14 +91,13 @@ public class App {
                         String nombreFichero = sc.nextLine();
 
                         try {
-                           List<String> lectura = gestion.leerFichero(nombreFichero, directorioSeleccionado);
+                            List<String> lectura = gestion.leerFichero(nombreFichero, directorioSeleccionado);
                             archivoSeleccionado = nombreFichero;
-                 
+
                         } catch (IOException e) {
                             System.out.println("Error");
                             e.printStackTrace();
                             archivoSeleccionado = null;
-
                         }
                     } else {
                         System.out.println(
@@ -120,28 +106,60 @@ public class App {
                     break;
 
                 case 3:
-                    // Conversión a formato
-
                     if (archivoSeleccionado != null) {
                         System.out.println(
                                 "Introduce que formato de conversión quieres utilizar para el archivo seleccionado ");
 
                         System.out.println("(Archivo seleccionado: " + archivoSeleccionado + ")");
 
-                        System.out.println("1.-xml  2.-csv  3.-json");
-                        opcion = sc.nextInt();
-                        sc.nextLine();
-                        System.out.println("Introduce el nombre de archivo de salida");
+                        String extension = gestion.detectorExtension(archivoSeleccionado);
+
+                        if (extension.equals("xml")) {
+                            System.out.println("1.-csv  2.-json");
+
+                        }
+                        if (extension.equals("csv")) {
+                            System.out.println("1.-json  2.-xml");
+
+                        }
+                        if (extension.equals("json")) {
+                            System.out.println("1.-csv  2.-xml");
+
+                        }
+
+                        volverIntroducir = false;
+                        do {
+
+                            try {
+                                opcion = sc.nextInt();
+                                sc.nextLine();
+                                volverIntroducir = true;
+                            } catch (InputMismatchException e) {
+                                System.out
+                                        .println(
+                                                "Error, entrada incorrecta, asegurate de introducir un numero de la consola.");
+                                e.printStackTrace();
+                                sc.nextLine();
+
+                            }
+                        } while (!volverIntroducir);
+
+                        System.out.println("Introduce el nombre de archivo de salida (Sin formato)");
+
                         String nombreArchivoSalida = sc.nextLine();
-                        gestion.conversion(opcion, archivoSeleccionado, directorioSeleccionado,
-                                gestion.getArchivoTextoGestion(), nombreArchivoSalida);
+                        try {
 
+                            gestion.conversion(opcion, archivoSeleccionado, directorioSeleccionado,
+                                    gestion.getArchivoTextoGestion(), nombreArchivoSalida);
 
-                                
+                        } catch (IOException e) {
+                            System.out.println("Error a la hora de convertir fichero o al escribir fichero");
+                            e.printStackTrace();
+                        }
 
-                        // gestion.conversion
                     } else {
                         System.out.println("Tiene que seleccionar primero un archivo");
+
                     }
                     break;
 
