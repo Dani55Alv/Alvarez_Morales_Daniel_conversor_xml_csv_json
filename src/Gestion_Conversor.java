@@ -419,8 +419,18 @@ public class Gestion_Conversor {
         boolean finProceso = false;
         // Extrayendo atributos
         for (int i = 2; i < texto.size(); i++) {
-            String linea = texto.get(i);
+            String linea = texto.get(i).trim(); // Asegurarse de que la línea no sea vacía
+            if (linea.isEmpty()) {
+                continue; // Si la línea está vacía, la ignoramos
+            }
+
             String[] partes1 = linea.split("[:,]");
+
+            // Verificar si el split produce el número esperado de elementos
+            if (partes1.length < 2) {
+                System.out.println("Línea malformada (menos de 2 elementos): " + linea);
+                continue; // Ignorar líneas malformadas
+            }
             for (int j = 0; j < partes1.length; j++) {
 
                 if (i == texto.size() - 3) {
@@ -456,6 +466,11 @@ public class Gestion_Conversor {
             }
 
             String[] partes = linea.split("\"");
+
+            // Verificar que la línea tenga suficientes elementos después de dividir
+            if (partes.length < 2) {
+                continue; // Si no hay suficientes elementos, ignoramos esta línea
+            }
 
             for (int j = 0; j < partes.length && finProceso == false; j++) {
 
@@ -527,37 +542,45 @@ public class Gestion_Conversor {
         boolean finProceso = false;
         // Extrayendo atributos
         for (int i = 2; i < texto.size(); i++) {
-            String linea = texto.get(i);
+            String linea = texto.get(i).trim();
+            // Evitar procesar líneas vacías o null IMPORTANTE
+            if (linea.isEmpty())
+                continue;
+
             String[] partess = linea.split("[:,]");
+
             for (int j = 0; j < partess.length; j++) {
+
+                // Evitar procesar líneas con menos de dos elementos después del split
+                if (partess.length < 2)
+                    continue;
 
                 if (i == texto.size() - 3) {
                     if (!soloUnaVez) {
                         String[] partes4 = texto.get(i).split("[:}]");
-                        atributosJson.add(partes4[1].trim());
+                        if (partes4.length > 1) { // Comprobamos que partes4 tenga al menos dos elementos
+                            atributosJson.add(partes4[1].trim());
+                        }
                         soloUnaVez = true;
                     }
-
                 } else {
                     if (j == 1) {
                         if (partess[j].trim().charAt(0) == ('\"')) {
                             String[] partes3 = partess[j].split("\"");
-
-                            atributosJson.add(partes3[1]);
+                            if (partes3.length > 1) { // Aseguramos que se pueda acceder a partes3[1]
+                                atributosJson.add(partes3[1].trim());
+                            }
                         } else {
-                            atributosJson.add(partess[j]);
-
+                            atributosJson.add(partess[j].trim());
                         }
-
                     }
-
                 }
             }
         }
 
         // Extrayendo clave de los atributos
         for (int i = 2; i < texto.size() && finProceso == false; i++) {
-            String linea = texto.get(i);
+            String linea = texto.get(i).trim();
             if (linea.trim().equals("},") || linea.trim().equals("}")) {
                 finProceso = true;
                 continue;
@@ -568,7 +591,7 @@ public class Gestion_Conversor {
             for (int j = 0; j < partes.length && finProceso == false; j++) {
 
                 if (j == 1) {
-                    etiquetasJson.add(partes[j]);
+                    etiquetasJson.add(partes[j].trim());
                     numeroAtributos++;
 
                 }
@@ -588,18 +611,20 @@ public class Gestion_Conversor {
 
         textoWork.add(padre);
         for (int i = 0; i < etiquetasJson.size(); i++) {
-
             textoWork.add(hijo);
 
             for (String jsonEtiqueta : etiquetasJson) {
-                textoWork.add("<" + jsonEtiqueta + ">");
+                String lineaXml = "";
+
+                lineaXml+="<" + jsonEtiqueta + ">";
 
                 // Añadir solo el dato correspondiente
                 if (contador < texto.size()) {
-                    textoWork.add(atributosJson.get(contador)); // Aqui ira atributos json
+                   lineaXml+=atributosJson.get(contador); // Aqui ira atributos json
                     contador++;
                 }
-                textoWork.add("</" + jsonEtiqueta + ">");
+                lineaXml +="</" + jsonEtiqueta + ">";
+                 textoWork.add(lineaXml);
 
             }
             textoWork.add(finHijo);
@@ -623,11 +648,9 @@ public class Gestion_Conversor {
      */
     public List<String> conversionXmlAjson(List<String> texto) {
         List<String> textoWork = new ArrayList<>();
-
         int numeroAtributos = 0;
 
-        // Reagrupando cabecera en estructura dinamica arraylist
-
+        // Reagrupando cabecera en estructura dinámica arraylist
         List<String> etiquetas = new ArrayList<>();
 
         // 1. Guardar la línea que marca el inicio de un objeto (ej: <usuario>)
@@ -637,6 +660,11 @@ public class Gestion_Conversor {
         // Empezamos desde la segunda línea (índice 1) para saltar <usuarios>
         for (int i = 1; i < texto.size(); i++) {
             String linea = texto.get(i).trim();
+
+            // Verificar si la línea está vacía o nula
+            if (linea.isEmpty()) {
+                continue; // Ignorar líneas vacías
+            }
 
             if (i != 1 && linea.equals(lineaElemento)) {
                 break; // cuando encontramos el segundo <usuario>, paramos
@@ -652,44 +680,42 @@ public class Gestion_Conversor {
             String linea = etiquetas.get(i);
             String[] partes = linea.split("[<>]");
 
+            // Verificar que la línea contenga más de un elemento antes de acceder
             if (partes.length > 1) {
                 etiquetasDef.add(partes[1]); // Esto es el nombre de la etiqueta: id, nombre...
             }
         }
 
-        // Contado atributos para hacer saltos al insertar
+        // Contando atributos para hacer saltos al insertar
         for (String etiqueta : etiquetasDef) {
             numeroAtributos++;
         }
 
-        // Reagrupando datos en estructura statica (cuerpo del csv)
-
+        // Reagrupando datos en estructura estática (cuerpo del CSV)
         List<String> auxCuerpo = new ArrayList<>();
         int saltoLinea = 0;
         for (String linea : texto) {
             String[] partes = linea.split("<[^>]+>"); // Divide por cualquier etiqueta
             for (int i = 0; i < partes.length; i++) {
-                if (partes[i].trim().equals("")) { // Esta linea elimina elementos vacios o espaciados
-                } else {
-                    saltoLinea++;
-                    if (saltoLinea == numeroAtributos) {
-                        auxCuerpo.add(partes[i].trim());
-                        saltoLinea = 0;
-                    } else {
-                        auxCuerpo.add(partes[i].trim() + ",");
-                    }
+                if (partes[i].trim().equals("")) { // Esta línea elimina elementos vacíos o espaciados
+                    continue;
                 }
 
+                saltoLinea++;
+                if (saltoLinea == numeroAtributos) {
+                    auxCuerpo.add(partes[i].trim());
+                    saltoLinea = 0;
+                } else {
+                    auxCuerpo.add(partes[i].trim() + ",");
+                }
             }
         }
 
-        // Reagrupando datos en estructura statica (el cuerpo)
-
+        // Reagrupando datos en estructura estática (el cuerpo)
         textoWork.add("{");
         textoWork.add("\"Caja\": [");
 
         // Insertando cabecera
-
         String etiquetaJson = "";
         for (int i = 0; i < etiquetasDef.size(); i++) {
             if (i == etiquetasDef.size() - 1) {
@@ -699,24 +725,21 @@ public class Gestion_Conversor {
             }
         }
 
-        // textoWork.add(cabecera);
-
         // Insertando cuerpo
-
         String cuerpo = "";
         int saltoPagina = 0;
         for (int i = 0; i < auxCuerpo.size(); i++) {
             String string = auxCuerpo.get(i);
             String valorLimpio = string.trim().replaceAll(",$", "");
 
+            // Verificar si es un número
             if (esNumero(valorLimpio)) {
-                cuerpo += "\"" + etiquetasDef.get(saltoPagina) + "\":" + string + " ";
+                cuerpo += "\"" + etiquetasDef.get(saltoPagina) + "\":" + string + "\n ";
             } else {
                 if (i == auxCuerpo.size() - 1 || (saltoPagina + 1) == numeroAtributos) {
-
-                    cuerpo += "\"" + etiquetasDef.get(saltoPagina) + "\":\"" + valorLimpio + "\"" + " ";
+                    cuerpo += "\"" + etiquetasDef.get(saltoPagina) + "\":\"" + valorLimpio + "\"" + " \n";
                 } else {
-                    cuerpo += "\"" + etiquetasDef.get(saltoPagina) + "\":\"" + valorLimpio + "\"," + " ";
+                    cuerpo += "\"" + etiquetasDef.get(saltoPagina) + "\":\"" + valorLimpio + "\"," + " \n";
                 }
             }
 
@@ -755,7 +778,7 @@ public class Gestion_Conversor {
      * @return textoWork Una lista de cadenas que representa el archivo XML
      *         convertido.
      */
-    
+
     public List<String> conversionCsvAxml(List<String> texto) {
 
         List<String> textoWork = new ArrayList<>();
@@ -771,27 +794,40 @@ public class Gestion_Conversor {
 
         textoWork.add(padre);
         for (int i = 1; i < texto.size(); i++) {
+            String linea = texto.get(i).trim(); // Accedemos todas las líneas desde la segunda (el índice 1).
 
-            String linea = texto.get(i); // Accedemos todas las lineas desde la segunda.
+            // Verificar si la línea está vacía
+            if (linea.isEmpty()) {
+                continue; // Si la línea está vacía, la ignoramos
+            }
+
             String[] datos = linea.split(",");
-            textoWork.add(hijo);
 
+            // Verificar si la línea tiene el mismo número de elementos que la cabecera
+            if (datos.length != cabeceraArray.length) {
+                System.out.println("Línea malformada (número de columnas incorrecto): " + linea);
+                continue; // Ignorar líneas malformadas
+            }
+
+            textoWork.add(hijo);
             contador = 0; // Reiniciamos el contador por cada elemento
 
             for (String cabeceraCsv : cabeceraArray) {
-                textoWork.add("<" + cabeceraCsv + ">");
+                String lineaXML = "<" + cabeceraCsv + ">";
 
                 // Añadir solo el dato correspondiente
                 if (contador < datos.length) {
-                    textoWork.add(datos[contador]);
+                    lineaXML += datos[contador];
                     contador++;
                 }
-                textoWork.add("</" + cabeceraCsv + ">");
+                lineaXML += "</" + cabeceraCsv + ">";
 
+                textoWork.add(lineaXML);
             }
             textoWork.add(finHijo);
-
         }
+
+        
         textoWork.add(finPadre);
 
         return textoWork;
@@ -810,7 +846,6 @@ public class Gestion_Conversor {
      * @return textoWork Una lista de cadenas que representa el archivo JSON
      *         convertido.
      */
-
     public List<String> conversionCsvAjson(List<String> texto) {
 
         List<String> textoWork = new ArrayList<>();
@@ -829,9 +864,19 @@ public class Gestion_Conversor {
 
         List<String> cuerpo = new ArrayList<>();
         for (int i = 1; i < texto.size(); i++) {
-            String linea = texto.get(i);
+            String linea = texto.get(i).trim();
+
+            // IMPORTANTE Saltamos líneas vacías
+            if (linea.isEmpty())
+                continue;
 
             String[] atributosPartes = linea.split(",");
+
+            // Saltamos líneas incompletas
+            if (atributosPartes.length != numeroAtributos) {
+                //System.out.println("Línea ignorada por ser incompleta: " + linea);
+                continue;
+            }
 
             for (String string : atributosPartes) {
                 if (!esNumero(string)) {
@@ -840,12 +885,13 @@ public class Gestion_Conversor {
                 cuerpo.add(string);
             }
         }
-
+        // Es importante el codigo de arriba de tratar con casos de lineas vacias.
         // Insertando del csv al json
+
         String lineaJson = "";
         for (int i = 0, j = 0; i < cuerpo.size() && j < cuerpo.size(); j++) {
             if (i == 0) {
-                textoWork.add("{");
+                lineaJson += "{";
             }
             if (i == numeroAtributos - 1) {
                 lineaJson += " \"" + cabeza.get(i) + " \": " + cuerpo.get(j);
@@ -892,11 +938,9 @@ public class Gestion_Conversor {
 
     public List<String> conversionXmlAcsv(List<String> texto) {
         List<String> textoWork = new ArrayList<>();
-
         int numeroAtributos = 0;
 
-        // Reagrupando cabecera en estructura dinamica arraylist
-
+        // Reagrupando cabecera en estructura dinámica arraylist
         List<String> auxCabecera = new ArrayList<>();
 
         // 1. Guardar la línea que marca el inicio de un objeto (ej: <usuario>)
@@ -906,6 +950,11 @@ public class Gestion_Conversor {
         // Empezamos desde la segunda línea (índice 1) para saltar <usuarios>
         for (int i = 1; i < texto.size(); i++) {
             String linea = texto.get(i).trim();
+
+            // Verificar si la línea está vacía o nula
+            if (linea.isEmpty()) {
+                continue; // Ignorar líneas vacías
+            }
 
             if (i != 1 && linea.equals(lineaElemento)) {
                 break; // cuando encontramos el segundo <usuario>, paramos
@@ -921,41 +970,41 @@ public class Gestion_Conversor {
             String linea = auxCabecera.get(i);
             String[] partes = linea.split("[<>]");
 
+            // Verificar que la línea contenga más de un elemento antes de acceder
             if (partes.length > 1) {
                 auxCabeceraDef.add(partes[1]); // Esto es el nombre de la etiqueta: id, nombre...
             }
         }
 
-        // Contado atributos para hacer saltos al insertar
+        // Contando atributos para hacer saltos al insertar
         for (String etiqueta : auxCabeceraDef) {
             numeroAtributos++;
         }
 
-        // Reagrupando datos en estructura statica (cuerpo del csv)
-
+        // Reagrupando datos en estructura estática (cuerpo del csv)
         List<String> auxCuerpo = new ArrayList<>();
         int saltoLinea = 0;
         for (String linea : texto) {
             String[] partes = linea.split("<[^>]+>"); // Divide por cualquier etiqueta
             for (int i = 0; i < partes.length; i++) {
-                if (partes[i].trim().equals("")) { // Esta linea elimina elementos vacios o espaciados
-                } else {
-                    saltoLinea++;
-                    if (saltoLinea == numeroAtributos) {
-                        auxCuerpo.add(partes[i].trim());
-                        saltoLinea = 0;
-                    } else {
-                        auxCuerpo.add(partes[i].trim() + ",");
-                    }
+                // Verificar si la parte está vacía antes de agregarla
+                if (partes[i].trim().equals("")) {
+                    continue; // Esta línea elimina elementos vacíos o espaciados
                 }
 
+                saltoLinea++;
+                if (saltoLinea == numeroAtributos) {
+                    auxCuerpo.add(partes[i].trim());
+                    saltoLinea = 0;
+                } else {
+                    auxCuerpo.add(partes[i].trim() + ",");
+                }
             }
         }
 
-        // Reagrupando datos en estructura statica (el cuerpo)
+        // Reagrupando datos en estructura estática (el cuerpo)
 
         // Insertando cabecera
-
         String cabecera = "";
         for (int i = 0; i < auxCabeceraDef.size(); i++) {
             if (i == auxCabeceraDef.size() - 1) {
@@ -968,7 +1017,6 @@ public class Gestion_Conversor {
         textoWork.add(cabecera);
 
         // Insertando cuerpo
-
         String cuerpo = "";
         int saltoPagina = 0;
 

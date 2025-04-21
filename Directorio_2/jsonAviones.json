@@ -1,7 +1,0 @@
-{
-"Caja": [
-{ "id":101, "modelo":"Boeing 747", "capacidad":416, "aerolinea":"Iberia"  },
-{ "id":102, "modelo":"Airbus A320", "capacidad":180, "aerolinea":"Vueling"  },
-{ "id":103, "modelo":"Embraer E190", "capacidad":100, "aerolinea":"Air Europa"  }
-]
-}
