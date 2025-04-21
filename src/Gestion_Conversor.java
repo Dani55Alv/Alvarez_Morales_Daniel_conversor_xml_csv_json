@@ -428,7 +428,7 @@ public class Gestion_Conversor {
 
             // Verificar si el split produce el número esperado de elementos
             if (partes1.length < 2) {
-                System.out.println("Línea malformada (menos de 2 elementos): " + linea);
+           //     System.out.println("Línea malformada (menos de 2 elementos): " + linea);
                 continue; // Ignorar líneas malformadas
             }
             for (int j = 0; j < partes1.length; j++) {
@@ -805,7 +805,7 @@ public class Gestion_Conversor {
 
             // Verificar si la línea tiene el mismo número de elementos que la cabecera
             if (datos.length != cabeceraArray.length) {
-                System.out.println("Línea malformada (número de columnas incorrecto): " + linea);
+               // System.out.println("Línea malformada (número de columnas incorrecto): " + linea);
                 continue; // Ignorar líneas malformadas
             }
 
