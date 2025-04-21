@@ -1,46 +1,46 @@
 {
   "Caja_json": [
     {
-      "id ": 1,
-      "marca ": "Toyota",
-      "modelo ": "Corolla",
-      "año ": 2020,
-      "color ": "Blanco"
+      "id": 1,
+      "marca": "Toyota",
+      "modelo": "Corolla",
+      "año": 2020,
+      "color": "Blanco"
     },
     {
-      "id ": 2,
-      "marca ": "Ford",
-      "modelo ": "Focus",
-      "año ": 2019,
-      "color ": "Negro"
+      "id": 2,
+      "marca": "Ford",
+      "modelo": "Focus",
+      "año": 2019,
+      "color": "Negro"
     },
     {
-      "id ": 3,
-      "marca ": "Honda",
-      "modelo ": "Civic",
-      "año ": 2021,
-      "color ": "Rojo"
+      "id": 3,
+      "marca": "Honda",
+      "modelo": "Civic",
+      "año": 2021,
+      "color": "Rojo"
     },
     {
-      "id ": 4,
-      "marca ": "Chevrolet",
-      "modelo ": "Malibu",
-      "año ": 2018,
-      "color ": "Azul"
+      "id": 4,
+      "marca": "Chevrolet",
+      "modelo": "Malibu",
+      "año": 2018,
+      "color": "Azul"
     },
     {
-      "id ": 5,
-      "marca ": "Hyundai",
-      "modelo ": "Elantra",
-      "año ": 2020,
-      "color ": "Gris"
+      "id": 5,
+      "marca": "Hyundai",
+      "modelo": "Elantra",
+      "año": 2020,
+      "color": "Gris"
     },
     {
-      "id ": 6,
-      "marca ": "Nissan",
-      "modelo ": "Altima",
-      "año ": 2022,
-      "color ": "Plateado"
+      "id": 6,
+      "marca": "Nissan",
+      "modelo": "Altima",
+      "año": 2022,
+      "color": "Plateado"
     }
   ]
 }

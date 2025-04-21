@@ -894,10 +894,10 @@ public class Gestion_Conversor {
                 lineaJson += "{";
             }
             if (i == numeroAtributos - 1) {
-                lineaJson += " \"" + cabeza.get(i) + " \": " + cuerpo.get(j);
+                lineaJson += " \"" + cabeza.get(i) + "\": " + cuerpo.get(j);
 
             } else {
-                lineaJson += " \"" + cabeza.get(i) + " \": " + cuerpo.get(j) + ",";
+                lineaJson += " \"" + cabeza.get(i) + "\": " + cuerpo.get(j) + ",";
             }
 
             textoWork.add(lineaJson.trim());
